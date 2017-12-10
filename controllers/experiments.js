@@ -127,8 +127,6 @@ exports.runTest = async(req, res, next) => {
         next(err)
     })
 
-
-    let modelId = req.params.modelId
     db.Model.find({
             where: {
                 id: modelId
