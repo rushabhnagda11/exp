@@ -43,15 +43,8 @@ app.all('*', (req, res, next) => {
 })
 
 // Create our Express router
-const router = express.Router()
 
-router.route('/model')
-    .post(modelController.createModel)
-router.route('/model/:modelId')
-    .get(modelController.getModel)
-
-
-let upload = multer({
+let upload1 = multer({
     storage: multer.diskStorage({
         destination: (req, file, callback) => {
             let type = req.params.modelId;
@@ -59,9 +52,23 @@ let upload = multer({
             fs.mkdirsSync(path);
             callback(null, path);
         },
-        filename: (req, file, callback) => {
+        filename: async(req, file, callback) => {
             //originalname is the uploaded file's name with extn
-            callback(null, file.originalname);
+            let type = req.params.modelId
+            let filePath = `./uploads/${type}/train`
+            let filename = file.originalname
+            let index = 1
+            while(true) {
+                let a = await fs.pathExists(filePath + "/" + filename)
+                if(a) {
+                    filename = index > 1 ? filename.substring(0, filename.length -1) + index : filename + "-" + index
+                    index += 1
+                } else { 
+                    break
+                }
+            }
+
+            callback(null, filename);
         }
     }),
     fileFilter: (req, file, callback) => {
@@ -93,8 +100,15 @@ let upload2 = multer({
     }
 })
 
+const router = express.Router()
+
+router.route('/model')
+    .post(modelController.createModel)
+router.route('/model/:modelId')
+    .get(modelController.getModel)
+
 router.route('/model/:modelId/image/upload')
-    .post(upload.array('images', 12), imageController.uploadImages)
+    .post(upload1.array('images', 12), imageController.uploadImages)
 
 router.route('/model/genexp')
     .post(experimentController.generateExperiments)
@@ -109,8 +123,6 @@ router.route('/model/:modelId/test')
 
 // Register all our routes with /api
 app.use(router)
-
-//app.use('/android', androidRoutes)
 
 const errorHandler = (err, req, res, next) => {
     if (err == 'Only jpgs are allowed') return res.status(400).send(err)

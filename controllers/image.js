@@ -2,10 +2,10 @@ const multer = require('multer')
 const fs = require('fs-extra')
 const db = require('../models/index')
 
-exports.uploadImages = (req, res, next) => {
+exports.uploadImages = async(req, res, next) => {
     //check if model exists
     let modelId = parseInt(req.params.modelId)
-    db.Model.findById(modelId)
+    await db.Model.findById(modelId)
         .then((data) => {
             if (!data) {
                 return res.status(400).send("Model does not exist. Please check the Id")

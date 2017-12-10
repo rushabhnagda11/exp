@@ -2,6 +2,9 @@ const db = require('../models/index')
 
 exports.createModel = (req, res, next) => {
     let name = req.body.name
+    if(!name) {
+        return res.status(400).send("Please add a model name")
+    }
     db.Model.create({
             name: name
         })

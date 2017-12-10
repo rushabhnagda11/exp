@@ -1,6 +1,7 @@
 db = require('../models/index')
-
-exports.initParameters = (req,res,next) => {
+const Promise = require('bluebird')
+const _ = require('lodash')
+exports.initParameters = async(req, res, next) => {
     let learningRate = req.body.learningRate
     let steps = req.body.steps
     let layers = req.body.layers
@@ -9,13 +10,24 @@ exports.initParameters = (req,res,next) => {
     learningRate.forEach((lr) => {
         steps.forEach((s) => {
             layers.forEach((l) => {
-                cr.push({learningRate : lr, steps : s, layers : l})
+                cr.push({
+                    learningRate: lr,
+                    steps: s,
+                    layers: l
+                })
             })
         })
     })
-    console.log(cr)
-    db.Parameter.bulkCreate(cr)
-    .then(() => {
-        res.send("done")
+    await db.Parameter.findAll({
+        where : {learningRate : learningRate, steps : steps, layers : layers}
     })
+        .then((data) => {
+            cr = cr.filter((c) => {
+                return !_.find(data, (o) => {return o.learningRate == c.learningRate && o.layers == c.layers && o.steps == c.steps})
+            })
+            db.Parameter.bulkCreate(cr)
+            .then(() => {
+                return res.send("done")
+            })
+        })
 }
