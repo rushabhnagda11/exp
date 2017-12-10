@@ -36,8 +36,11 @@ exports.generateExperiments = async(req, res, next) => {
             }
         })
         .then((data) => {
-            if (data && data.length > 0) {
-                return res.status(400).send("Experiments have already been generated")
+            exp = exp.filter(e => {
+                return !_.find(data, (o) => { return o.parametersId == e.parametersId})
+            })
+            if (!exp || exp.length == 0) {
+                return res.status(400).send("Experiments have already been generated. You can create new one parameters and generate the new experiments")
             }
         })
     if(a) return
