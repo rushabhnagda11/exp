@@ -6,6 +6,16 @@ const _ = require('lodash')
 exports.generateExperiments = async(req, res, next) => {
     let modelId = parseInt(req.body.modelId)
     let exp = []
+
+    await db.Model.findById(modelId)
+    .then((data) => {
+        if (!data) {
+            return res.status(400).send("Model does not exist. Please check the Id")
+        }
+    }).catch(err => {
+        next(err)
+    })
+
     await db.Parameter.findAll()
         .then((params) => {
             if (!params || params.length == 0) {
@@ -103,6 +113,7 @@ exports.runExperiments = async(req, res, next) => {
 
 exports.runTest = async(req, res, next) => {
     let file = req.file
+    let modelId = req.params.modelId
     if (!file) {
         return res.status(400).send("Please add one test image")
     }
