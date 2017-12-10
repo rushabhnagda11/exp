@@ -13,7 +13,7 @@ const imageController = require('./controllers/image')
 const experimentController = require('./controllers/experiments')
 const parameterController = require('./controllers/parameter')
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nanonets')
+//mongoose.connect(process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/nanonets')
 const kafkaConfig = process.env.KAFKA_CONFIG ? JSON.parse(process.env.KAFKA_CONFIG) : {
     'topic': 'test2',
     'connectionString': '10.112.98.41:2181'
