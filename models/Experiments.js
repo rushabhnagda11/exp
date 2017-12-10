@@ -2,7 +2,8 @@ module.exports = (sequelize, DataTypes) => {
     const Experiment = sequelize.define('Experiment', {
       modelId: DataTypes.INTEGER,
       parametersId: DataTypes.INTEGER,
-      score : DataTypes.DOUBLE
+      score : DataTypes.DOUBLE,
+      status : DataTypes.STRING
     }, {
       classMethods: {
         associate: (models) => {

@@ -88,6 +88,14 @@ exports.runExperiments = async(req, res, next) => {
         .then((data) => {
             if (data && data.length > 0) {
                 let promiseArr = []
+                db.Experiment.update({
+                    status: "executing"
+                }, {
+                    where: {
+                        modelId: modelId
+                    }
+                })
+                .then((a) => {
                 res.send("Running experiments. Please check after some time")
                 data.forEach((exp) => {
                     let command = 'python train.py --i ' + exp.Parameter.learningRate + ' --j ' + exp.Parameter.layers + ' --k ' + exp.Parameter.steps + ' --images ' + ' ./uploads/' + modelId + '/train/'
@@ -115,6 +123,7 @@ exports.runExperiments = async(req, res, next) => {
                             }
                         })
                     })
+                })
             } else {
                 res.status(400).send("Please generate experiments first")
             }
