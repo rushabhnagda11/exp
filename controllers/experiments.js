@@ -37,7 +37,7 @@ exports.generateExperiments = async(req, res, next) => {
         })
         .then((data) => {
             if (data && data.length > 0) {
-                return res.status(400).send("Experiments have already been generated. Please delete them and then generate them again")
+                return res.status(400).send("Experiments have already been generated")
             }
         })
     if(a) return
