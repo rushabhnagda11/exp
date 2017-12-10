@@ -4,6 +4,7 @@ const db = require('../models/index')
 
 exports.uploadImages = async(req, res, next) => {
     //check if model exists
+    console.log(JSON.stringify(req.files))
     let modelId = parseInt(req.params.modelId)
     let a = await db.Model.findById(modelId)
         .then((data) => {
@@ -25,7 +26,7 @@ exports.uploadImages = async(req, res, next) => {
         files.map((file) => {
             return {
                 modelId: modelId,
-                name: file.originalname
+                name: file.filename
             }
         })
     ).then(() => res.send("Images uploaded successfully"))
