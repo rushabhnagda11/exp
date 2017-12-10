@@ -75,7 +75,9 @@ exports.runExperiments = (req, res, next) => {
 
 exports.runTest = (req, res, next) => {
     let file = req.file
-    console.log(JSON.stringify(req.file))
+    if(!file) {
+        return res.status(400).send("Please add one test image")
+    }
     let modelId = req.params.modelId
     db.Model.find({
             where: {
