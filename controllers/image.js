@@ -5,7 +5,7 @@ const db = require('../models/index')
 exports.uploadImages = async(req, res, next) => {
     //check if model exists
     let modelId = parseInt(req.params.modelId)
-    await db.Model.findById(modelId)
+    let a = await db.Model.findById(modelId)
         .then((data) => {
             if (!data) {
                 return res.status(400).send("Model does not exist. Please check the Id")
@@ -13,6 +13,7 @@ exports.uploadImages = async(req, res, next) => {
         }).catch(err => {
             next(err)
         })
+    if(a) return
 
     //check if images are of the correct types
     let files = req.files

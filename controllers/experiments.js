@@ -7,7 +7,7 @@ exports.generateExperiments = async(req, res, next) => {
     let modelId = parseInt(req.body.modelId)
     let exp = []
 
-    await db.Model.findById(modelId)
+    let a = await db.Model.findById(modelId)
     .then((data) => {
         if (!data) {
             return res.status(400).send("Model does not exist. Please check the Id")
@@ -16,7 +16,9 @@ exports.generateExperiments = async(req, res, next) => {
         next(err)
     })
 
-    await db.Parameter.findAll()
+    if(a) return
+
+    a = await db.Parameter.findAll()
         .then((params) => {
             if (!params || params.length == 0) {
                 return res.status(400).send("Experiment params havent been generated. Please do that first.")
@@ -26,9 +28,9 @@ exports.generateExperiments = async(req, res, next) => {
                 parametersId: o.id
             }))
         })
+    if(a) return
 
-
-    await db.Experiment.findAll({
+    a = await db.Experiment.findAll({
             where: {
                 modelId: modelId
             }
@@ -38,6 +40,7 @@ exports.generateExperiments = async(req, res, next) => {
                 return res.status(400).send("Experiments have already been generated. Please delete them and then generate them again")
             }
         })
+    if(a) return
     db.Experiment.bulkCreate(exp)
         .then(() => {
             return res.send("Experiments generated successfully")
@@ -47,7 +50,7 @@ exports.generateExperiments = async(req, res, next) => {
 exports.runExperiments = async(req, res, next) => {
     let modelId = parseInt(req.body.modelId)
 
-    await db.Model.findById(modelId)
+    let a = await db.Model.findById(modelId)
     .then((data) => {
         if (!data) {
             return res.status(400).send("Model does not exist. Please check the Id")
@@ -56,7 +59,9 @@ exports.runExperiments = async(req, res, next) => {
         next(err)
     })
 
-    await db.Image.findAll({
+    if(a) return    
+
+    a = await db.Image.findAll({
         where : {
             modelId : modelId
         }
@@ -66,6 +71,8 @@ exports.runExperiments = async(req, res, next) => {
     }).catch(err => {
         next(err)
     })
+
+    if(a) return    
 
     db.Experiment.findAll({
             where: {
@@ -118,7 +125,7 @@ exports.runTest = async(req, res, next) => {
         return res.status(400).send("Please add one test image")
     }
 
-    await db.Model.findById(modelId)
+    let a = await db.Model.findById(modelId)
     .then((data) => {
         if (!data) {
             return res.status(400).send("Model does not exist. Please check the Id")
@@ -126,6 +133,8 @@ exports.runTest = async(req, res, next) => {
     }).catch(err => {
         next(err)
     })
+
+    if(a) return    
 
     db.Model.find({
             where: {
