@@ -47,7 +47,7 @@ exports.runExperiments = (req, res, next) => {
                 let promiseArr = []
                 res.send("Running experiments. Please check after some time")
                 data.forEach((exp) => {
-                    let command = 'python train.py --i ' + exp.Parameter.learningRate + ' --j ' + exp.Parameter.layers + ' --k ' + exp.Parameter.steps + ' --images ' + ' ./uploads/' + modelId + '/'
+                    let command = 'python train.py --i ' + exp.Parameter.learningRate + ' --j ' + exp.Parameter.layers + ' --k ' + exp.Parameter.steps + ' --images ' + ' ./uploads/' + modelId + '/train/'
                     promiseArr.push(exec(command))
                 })
                 Promise.all(promiseArr)

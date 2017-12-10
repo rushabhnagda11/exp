@@ -55,7 +55,7 @@ let upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, callback) => {
             let type = req.params.modelId;
-            let path = `./uploads/${type}`;
+            let path = `./uploads/${type}/train`;
             fs.mkdirsSync(path);
             callback(null, path);
         },
