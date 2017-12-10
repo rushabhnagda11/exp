@@ -34,8 +34,29 @@ exports.generateExperiments = async(req, res, next) => {
         })
 }
 
-exports.runExperiments = (req, res, next) => {
-    let modelId = req.body.modelId
+exports.runExperiments = async(req, res, next) => {
+    let modelId = parseInt(req.body.modelId)
+
+    await db.Model.findById(modelId)
+    .then((data) => {
+        if (!data) {
+            return res.status(400).send("Model does not exist. Please check the Id")
+        }
+    }).catch(err => {
+        next(err)
+    })
+
+    await db.Image.findAll({
+        where : {
+            modelId : modelId
+        }
+    }).then((data) => {
+        if(!data || data.length == 0)
+            return res.status(400).send("Please upload images to the training set of this model")
+    }).catch(err => {
+        next(err)
+    })
+
     db.Experiment.findAll({
             where: {
                 modelId: modelId
@@ -80,11 +101,22 @@ exports.runExperiments = (req, res, next) => {
         }).catch(err => next(err))
 }
 
-exports.runTest = (req, res, next) => {
+exports.runTest = async(req, res, next) => {
     let file = req.file
     if (!file) {
         return res.status(400).send("Please add one test image")
     }
+
+    await db.Model.findById(modelId)
+    .then((data) => {
+        if (!data) {
+            return res.status(400).send("Model does not exist. Please check the Id")
+        }
+    }).catch(err => {
+        next(err)
+    })
+
+
     let modelId = req.params.modelId
     db.Model.find({
             where: {
